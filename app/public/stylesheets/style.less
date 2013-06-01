@@ -1,29 +1,8 @@
-.border-radius(@radius) {
-	-webkit-border-radius: @radius;
-	-moz-border-radius: @radius;
-	border-radius: @radius;
-}
-
-.box-shadow(@shadow1) {
-	-webkit-box-shadow: @shadow1;
-	-moz-box-shadow: @shadow1;
-	box-shadow: @shadow1;
-}
-
-.box-shadow(@shadow1, @shadow2) {
-	-webkit-box-shadow: @shadow1, @shadow2;
-	-moz-box-shadow: @shadow1, @shadow2;
-	box-shadow: @shadow1, @shadow2;
-}
-
-.box-shadow(@shadow1, @shadow2, @shadow3) {
-	-webkit-box-shadow: @shadow1, @shadow2, @shadow3;
-	-moz-box-shadow: @shadow1, @shadow2, @shadow3;
-	box-shadow: @shadow1, @shadow2, @shadow3;
-}
+@import "mixins";
+@import "tiles";
 
 body {
-  padding: 50px;
+  padding: 20px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   color: white;
   background-image: url(../images/background.png);
@@ -31,6 +10,7 @@ body {
 
 #title {
 	text-align: center;
+	margin: 20px;
 }
 
 .logo {
@@ -42,7 +22,7 @@ body {
 	font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
 	font-size: 40px;
 	font-weight: bolder;
-	text-shadow: -1px -1px 0px #804040;
+	.text-shadow(-1px -1px 0px #804040);
 }
 
 a {
