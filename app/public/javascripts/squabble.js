@@ -8,6 +8,6 @@ function connect()
 function newLetter(letter, value) {
 	$('<div data-letter="' + letter + '" data-value="' + value + '" class="tile" />')
 	  .hide()
-	  .appendTo('body')
+	  .appendTo('#available')
 	  .fadeIn('slow');
 }
