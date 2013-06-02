@@ -3,6 +3,8 @@ exports.run = function(socket) {
 
 
   function newLetter() {
-    socket.emit('new-letter', 'A', 1)
+  	var letterIndex = Math.floor(Math.random() * 26)
+  	var letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(letterIndex);
+    socket.emit('new-letter', letter)
   }
 }
