@@ -21,10 +21,10 @@ function intersectsTile(x, y, w, h, p) {
 }
 
 function rotate(elem, degree) {
-    // For webkit browsers: e.g. Chrome
-    elem.css({ WebkitTransform: 'rotate(' + degree + 'deg)'});
-    // For Mozilla browser: e.g. Firefox
+    elem.css({ '-webkit-transform': 'rotate(' + degree + 'deg)'});
     elem.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});
+    elem.css({ '-o-transform': 'rotate(' + degree + 'deg)'});
+    elem.css({ 'transform': 'rotate(' + degree + 'deg)'});
 }
 
 function letterValue(letter) {
