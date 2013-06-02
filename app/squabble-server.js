@@ -1,5 +1,5 @@
 exports.run = function(socket) {
-  setInterval(newLetter, 5000)
+  setInterval(newLetter, 2000)
 
 
   function newLetter() {
