@@ -7,7 +7,10 @@ var express = require('express')
   , routes = require('./routes')
   , http = require('http')
   , path = require('path')
-  , lessMiddleware = require('less-middleware');
+  , lessMiddleware = require('less-middleware')
+  , socketIO = require('socket.io');
+
+var squabbleServer = require('./squabble-server')
 
 var app = express();
 
@@ -33,6 +36,10 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+var io = require('socket.io').listen(server);
+
+io.sockets.on('connection', squabbleServer.run)
