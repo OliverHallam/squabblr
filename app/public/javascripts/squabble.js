@@ -72,8 +72,8 @@ function newLetter(letter) {
 	
 	// try to find a gap this tile will fit in
 	for (var i=0; i<100; i++) {
-		var x=Math.floor(Math.random() * (available.width() - 40) + 10);
-		var y=Math.floor(Math.random() * (available.height() - 40) + 10);
+		var x=Math.floor(Math.random() * (available.width() - 60));
+		var y=Math.floor(Math.random() * (available.height() - 60));
 		if (intersectsTile(x, y, 60, 60, 8) === false)
 			break;
 	}
