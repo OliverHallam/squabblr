@@ -3,12 +3,17 @@ function connect()
 	var url = window.location.protocol + "//" + window.location.host;
 	var socket = io.connect(url);
 	socket.on('new-letter', newLetter);
+	socket.on('word-accepted', wordAccepted)
 	socket.on('word-rejected', wordRejected)
 
 	$('#submit-word').submit(function(event) {
 		event.preventDefault();
 		socket.emit('submit-word', $('#input-word').val());
 	})
+}
+
+function wordAccepted(word) {
+	$('#input-word').val('');
 }
 
 function wordRejected(word) {

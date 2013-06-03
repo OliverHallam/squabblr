@@ -1,8 +1,19 @@
+var _ = require('underscore');
+var fs = require('fs');
+
+var dictText = fs.readFileSync('./dictionaries/sowpods.txt', 'UTF-8');
+var dict = dictText.split('\r\n');
+
 exports.run = function(socket) {
+    
   setInterval(newLetter, 2000)
 
   socket.on('submit-word', function (data) {
-    socket.emit('word-rejected', data);
+  	var data = data.toUpperCase();
+  	if (_.contains(dict, data))
+  		socket.emit('word-accepted', data);
+  	else
+    	socket.emit('word-rejected', data);
   })
 
   function newLetter() {
