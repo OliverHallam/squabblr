@@ -2,6 +2,7 @@ function connect()
 {
 	var url = window.location.protocol + "//" + window.location.host;
 	var socket = io.connect(url);
+	socket.on('set-state', setState);
 	socket.on('new-letter', newLetter);
 	socket.on('word-accepted', wordAccepted)
 	socket.on('word-rejected', wordRejected)
@@ -10,6 +11,13 @@ function connect()
 		event.preventDefault();
 		socket.emit('submit-word', $('#input-word').val());
 	})
+}
+
+function setState(state) {
+	var length = state.letters.length;
+	for (i = 0; i<length; i++) {
+		newLetter(state.letters[i]);
+	}
 }
 
 function wordAccepted(word) {
