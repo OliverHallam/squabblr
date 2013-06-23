@@ -62,7 +62,7 @@ function letterValue(letter) {
 
 function addTile(parent, letter) {
 	// try to find a gap this tile will fit in
-	for (var i=0; i<100; i++) {
+	for (var i=0; i<10; i++) {
 		var x=Math.floor(Math.random() * (parent.width() - 60));
 		var y=Math.floor(Math.random() * (parent.height() - 60));
 		if (intersectsTile(x, y, 60, 60, 8) === false)

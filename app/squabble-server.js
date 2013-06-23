@@ -6,10 +6,12 @@ var dict = dictText.split('\r\n');
 
 var isRunning = false;
 var sockets = [];
+var newLetterInterval;
 
 var gameState = 
 {
-  letters: []
+  letters: [],
+  players: []
 }
 
 exports.connect = function(socket) {
@@ -22,13 +24,17 @@ exports.connect = function(socket) {
     isRunning = true;
   }
 
-  socket.on('submit-word', onSubmitWord);
+  socket.on('join', function(name) {
+    gameState.players.push(name);
+    socket.emit('joined');
+    socket.on('submit-word', function(word) { onSubmitWord(socket, word) });
+  });
 }
 
 exports.run = function() {
   console.log('Started game')
 
-  setInterval(newLetter, 2000)
+  newLetterInterval = setInterval(newLetter, 2000);
 }
 
 function newLetter() {
@@ -37,9 +43,13 @@ function newLetter() {
   
   gameState.letters.push(letter);
   _.each(sockets, function (socket) { socket.emit('new-letter', letter) })
+
+  if (gameState.letters.length === 10) {
+    clearInterval(newLetterInterval);
+  }
 }
 
-function onSubmitWord(data) {
+function onSubmitWord(socket, data) {
     var data = data.toUpperCase();
     if (_.contains(dict, data))
       socket.emit('word-accepted', data);
