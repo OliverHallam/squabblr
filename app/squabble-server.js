@@ -61,10 +61,33 @@ function newLetter() {
   }
 }
 
+function isValidWord(data)
+{
+  if (data === null || data.length == 0)
+    return false;
+
+  // first, check whether we have enough letters
+  var letterIndexes = [];
+  for (var i = 0; i < data.length; i++) {
+    var letter = data[i];
+    var index = -1;
+    do {
+      index = gameState.letters.indexOf(letter, index + 1);
+      if (index < 0)
+        return false;
+    } while (_.contains(letterIndexes, index))
+    letterIndexes.push(index);
+  }
+
+  // second, check that the word is actually a word
+  return _.contains(dict, data);
+}
+
 function onSubmitWord(socket, data) {
-    var data = data.toUpperCase();
-    if (_.contains(dict, data))
-      socket.emit('word-accepted', data);
-    else
-      socket.emit('word-rejected', data);
-  };
+  var data = data.toUpperCase();
+
+  if (isValidWord(data))
+    socket.emit('word-accepted', data);
+  else
+    socket.emit('word-rejected', data);
+};
