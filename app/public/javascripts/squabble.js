@@ -5,6 +5,7 @@ function connect()
 	socket.on('set-state', setState);
 	socket.on('joined', joined);
 	socket.on('player-joined', playerJoined)
+	socket.on('player-disconnected', playerDisconnected)
 	socket.on('new-letter', newLetter);
 	socket.on('word-accepted', wordAccepted)
 	socket.on('word-rejected', wordRejected)
@@ -44,7 +45,12 @@ function joined() {
 }
 
 function playerJoined(name) {
-	$('#players').append("<div>" + name + "</div>");
+	$('#players').append("<div data-player='" + name + "'>" + name + "</div>");
+}
+
+function playerDisconnected(name) {
+	var player = $('#players div[data-player="' + name + '"]');
+	player.slideUp(1000, function() { player.remove() });
 }
 
 function wordAccepted(word) {

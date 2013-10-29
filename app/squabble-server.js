@@ -17,6 +17,11 @@ var gameState =
 exports.connect = function(socket) {
   sockets.push(socket)
 
+  socket.on('disconnect', function() {
+    var index = sockets.indexOf(socket);
+    sockets.splice(index, 1);
+  });
+
   if (isRunning) {
     socket.emit('set-state', gameState)
   } else {
@@ -25,9 +30,16 @@ exports.connect = function(socket) {
   }
 
   socket.on('join', function(name) {
-    addPlayer(name)
-    socket.emit('joined');
     socket.on('submit-word', function(word) { onSubmitWord(socket, word) });
+
+    gameState.players.push(name);
+    socket.emit('joined');
+
+    _.each(sockets, function (socket) { socket.emit('player-joined', name)});
+    socket.on('disconnect', function() {
+      gameState.players.splice(gameState.players.indexOf(name), 1);
+      _.each(sockets, function(socket) { socket.emit('player-disconnected', name) })
+    })
   });
 }
 
@@ -35,12 +47,6 @@ exports.run = function() {
   console.log('Started game')
 
   newLetterInterval = setInterval(newLetter, 2000);
-}
-
-function addPlayer(name)
-{
-  gameState.players.push(name);
-  _.each(sockets, function (socket) { socket.emit('player-joined', name)});
 }
 
 function newLetter() {
