@@ -25,7 +25,7 @@ exports.connect = function(socket) {
   }
 
   socket.on('join', function(name) {
-    gameState.players.push(name);
+    addPlayer(name)
     socket.emit('joined');
     socket.on('submit-word', function(word) { onSubmitWord(socket, word) });
   });
@@ -35,6 +35,12 @@ exports.run = function() {
   console.log('Started game')
 
   newLetterInterval = setInterval(newLetter, 2000);
+}
+
+function addPlayer(name)
+{
+  gameState.players.push(name);
+  _.each(sockets, function (socket) { socket.emit('player-joined', name)});
 }
 
 function newLetter() {

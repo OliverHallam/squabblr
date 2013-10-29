@@ -4,6 +4,7 @@ function connect()
 	var socket = io.connect(url);
 	socket.on('set-state', setState);
 	socket.on('joined', joined);
+	socket.on('player-joined', playerJoined)
 	socket.on('new-letter', newLetter);
 	socket.on('word-accepted', wordAccepted)
 	socket.on('word-rejected', wordRejected)
@@ -30,11 +31,20 @@ function setState(state) {
 	for (i = 0; i<length; i++) {
 		newLetter(state.letters[i]);
 	}
+
+	var length = state.players.length;
+	for (i = 0; i<length; i++) {
+		playerJoined(state.players[i]);
+	}
 }
 
 function joined() {
 	$('#fade').fadeOut(1000);
 	$('#input-word').slideDown(1000);
+}
+
+function playerJoined(name) {
+	$('#players').append("<div>" + name + "</div>");
 }
 
 function wordAccepted(word) {
