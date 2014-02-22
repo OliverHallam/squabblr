@@ -22,32 +22,46 @@ exports.connect = function(socket) {
     sockets.splice(index, 1);
   });
 
-  if (isRunning) {
-    socket.emit('set-state', gameState);
-  } else {;
-    exports.run();
-    isRunning = true;
-  }
+  socket.emit('set-state', gameState);
 
-  socket.on('join', function(name) {
-    socket.on('submit-word', function(word) { onSubmitWord(socket, word); });
-
-    gameState.players.push(name);
-    socket.emit('joined');
-
-    _.each(sockets, function(s) { s.emit('player-joined', name); });
-    socket.on('disconnect', function() {
-      gameState.players.splice(gameState.players.indexOf(name), 1);
-      _.each(sockets, function(s) { s.emit('player-disconnected', name); });
-    });
-  });
+  socket.on('join', function(name) { join(socket, name); });
 };
 
-exports.run = function() {
+function join(socket, name)
+{
+  socket.emit('joined');
+
+  var playerIndex = gameState.players.push({ name: name }) - 1;
+
+  _.each(sockets, function(s) { s.emit('player-joined', name); });
+
+  socket.on('disconnect', function() {
+    gameState.players.splice(playerIndex, 1);
+    _.each(sockets, function(s) { s.emit('player-disconnected', name); });
+  });
+
+  socket.on('ready', function() { ready(socket, playerIndex); });
+}
+
+function ready(socket, playerIndex) {
+  gameState.players[playerIndex].started = true;
+  if (_.all(gameState.players, function(x) { return x.started; })) {
+    start();
+  }
+}
+
+function start() {
   console.log('Started game');
 
+  _.each(sockets, function(socket) { socket.emit('start-game'); });
+  _.each(sockets, function(socket) {
+     socket.on('submit-word', function(word) { onSubmitWord(socket, word); });
+  });
+
   newLetterInterval = setInterval(newLetter, 2000);
-};
+
+  isRunning = true;
+}
 
 function newLetter() {
   var letterIndex = Math.floor(Math.random() * 26);

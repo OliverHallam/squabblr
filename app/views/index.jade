@@ -10,7 +10,7 @@ block content
     #players
       h3 Players
   #fade
-    #login
+    .dialog(id='login')
       h2 Ready to get squabbling?
       p To join the game, please enter your name:
       form(id='join')
@@ -19,6 +19,11 @@ block content
           input(type='submit', value='Join', id='button-join')
         div
           input(type='button', value="I'd rather just watch", id='button-watch')
+    .dialog(id='waiting')
+      h2 Waiting for other players
+      form(id='ready')
+        div
+          input(type='submit', value='Start', id='button-start')
   script(src='javascripts/tiles.js')
   script(src='javascripts/squabble.js')
   script connect();
