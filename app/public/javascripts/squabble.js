@@ -4,37 +4,37 @@ function connect()
 	var socket = io.connect(url);
 	socket.on('set-state', setState);
 	socket.on('joined', joined);
-	socket.on('player-joined', playerJoined)
-	socket.on('player-disconnected', playerDisconnected)
+  socket.on('player-joined', playerJoined);
+  socket.on('player-disconnected', playerDisconnected);
 	socket.on('new-letter', newLetter);
-	socket.on('word-accepted', wordAccepted)
-	socket.on('word-rejected', wordRejected)
+  socket.on('word-accepted', wordAccepted);
+  socket.on('word-rejected', wordRejected);
 
-	$('#submit-word').submit(function(event) {
-		event.preventDefault();
-		socket.emit('submit-word', $('#input-word').val());
-	})
+  $('#join').submit(function(event) {
+    event.preventDefault();
+    $('#login').hide();
+    socket.emit('join', $('#input-name').val());
+  });
 
-	$('#button-watch').click(function(event) {
-		$('#login').hide();
-		$('#fade').fadeOut(1000);
-	})
+  $('#button-watch').click(function() {
+    $('#login').hide();
+    $('#fade').fadeOut(1000);
+  });
 
-	$('#join').submit(function(event) {
-		event.preventDefault();
-	 	$('#login').hide();
-		socket.emit('join', $('#input-name').val());
-	})
+$('#submit-word').submit(function(event) {
+    event.preventDefault();
+    socket.emit('submit-word', $('#input-word').val());
+  });
 }
 
 function setState(state) {
-	var length = state.letters.length;
-	for (i = 0; i<length; i++) {
+	var lettersLength = state.letters.length;
+	for (var i = 0; i<lettersLength; i++) {
 		newLetter(state.letters[i]);
 	}
 
-	var length = state.players.length;
-	for (i = 0; i<length; i++) {
+	var playersLength = state.players.length;
+	for (i = 0; i<playersLength; i++) {
 		playerJoined(state.players[i]);
 	}
 }
@@ -50,7 +50,7 @@ function playerJoined(name) {
 
 function playerDisconnected(name) {
 	var player = $('#players div[data-player="' + name + '"]');
-	player.slideUp(1000, function() { player.remove() });
+	player.slideUp(1000, function() { player.remove(); });
 }
 
 function wordAccepted(word) {
@@ -58,8 +58,8 @@ function wordAccepted(word) {
 }
 
 function wordRejected(word) {
-	$('#input-word').stop().css('color', '#f00')
-	    .animate({'color': '#000'}, 500)
+  $('#input-word').stop().css('color', '#f00')
+    .animate({ 'color': '#000' }, 500);
 }
 
 function newLetter(letter) {

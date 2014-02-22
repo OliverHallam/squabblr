@@ -10,7 +10,7 @@ var express = require('express')
   , lessMiddleware = require('less-middleware')
   , socketIO = require('socket.io');
 
-var squabbleServer = require('./squabble-server')
+var squabbleServer = require('./squabble-server');
 
 var app = express();
 
@@ -42,4 +42,4 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 
 var io = require('socket.io').listen(server);
 
-io.sockets.on('connection', squabbleServer.connect)
+io.sockets.on('connection', squabbleServer.connect);

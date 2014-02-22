@@ -1,5 +1,5 @@
 function intersectsTile(x, y, w, h, p) {
-	var tiles = $('#available .tile')
+  var tiles = $('#available .tile');
 	var length = tiles.length;
 	for (var i = 0; i < length; i++) {
 	  var tile = $(tiles[i]);
@@ -61,10 +61,12 @@ function letterValue(letter) {
 }
 
 function addTile(parent, letter) {
-	// try to find a gap this tile will fit in
+  var x=0, y=0;
+	
+  // try to find a gap this tile will fit in
 	for (var i=0; i<10; i++) {
-		var x=Math.floor(Math.random() * (parent.width() - 60));
-		var y=Math.floor(Math.random() * (parent.height() - 60));
+		x=Math.floor(Math.random() * (parent.width() - 60));
+		y=Math.floor(Math.random() * (parent.height() - 60));
 		if (intersectsTile(x, y, 60, 60, 8) === false)
 			break;
 	}

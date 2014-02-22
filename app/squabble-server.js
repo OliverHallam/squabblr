@@ -8,14 +8,14 @@ var isRunning = false;
 var sockets = [];
 var newLetterInterval;
 
-var gameState = 
+var gameState =
 {
   letters: [],
   players: []
-}
+};
 
 exports.connect = function(socket) {
-  sockets.push(socket)
+  sockets.push(socket);
 
   socket.on('disconnect', function() {
     var index = sockets.indexOf(socket);
@@ -23,47 +23,46 @@ exports.connect = function(socket) {
   });
 
   if (isRunning) {
-    socket.emit('set-state', gameState)
-  } else {
+    socket.emit('set-state', gameState);
+  } else {;
     exports.run();
     isRunning = true;
   }
 
   socket.on('join', function(name) {
-    socket.on('submit-word', function(word) { onSubmitWord(socket, word) });
+    socket.on('submit-word', function(word) { onSubmitWord(socket, word); });
 
     gameState.players.push(name);
     socket.emit('joined');
 
-    _.each(sockets, function (socket) { socket.emit('player-joined', name)});
+    _.each(sockets, function(s) { s.emit('player-joined', name); });
     socket.on('disconnect', function() {
       gameState.players.splice(gameState.players.indexOf(name), 1);
-      _.each(sockets, function(socket) { socket.emit('player-disconnected', name) })
-    })
+      _.each(sockets, function(s) { s.emit('player-disconnected', name); });
+    });
   });
-}
+};
 
 exports.run = function() {
-  console.log('Started game')
+  console.log('Started game');
 
   newLetterInterval = setInterval(newLetter, 2000);
-}
+};
 
 function newLetter() {
-  var letterIndex = Math.floor(Math.random() * 26)
+  var letterIndex = Math.floor(Math.random() * 26);
   var letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(letterIndex);
   
   gameState.letters.push(letter);
-  _.each(sockets, function (socket) { socket.emit('new-letter', letter) })
+  _.each(sockets, function(socket) { socket.emit('new-letter', letter); });
 
   if (gameState.letters.length === 10) {
     clearInterval(newLetterInterval);
   }
 }
 
-function isValidWord(data)
-{
-  if (data === null || data.length == 0)
+function isValidWord(data) {
+  if (data == null || data.length === 0)
     return false;
 
   // first, check whether we have enough letters
@@ -76,6 +75,7 @@ function isValidWord(data)
       if (index < 0)
         return false;
     } while (_.contains(letterIndexes, index))
+
     letterIndexes.push(index);
   }
 
@@ -84,7 +84,7 @@ function isValidWord(data)
 }
 
 function onSubmitWord(socket, data) {
-  var data = data.toUpperCase();
+  data = data.toUpperCase();
 
   if (isValidWord(data))
     socket.emit('word-accepted', data);
