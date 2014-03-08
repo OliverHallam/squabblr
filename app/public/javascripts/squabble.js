@@ -1,3 +1,5 @@
+var activePlayer;
+
 function connect()
 {
   var url = window.location.protocol + "//" + window.location.host;
@@ -10,6 +12,7 @@ function connect()
   socket.on('new-letter', newLetter);
   socket.on('word-accepted', wordAccepted);
   socket.on('word-rejected', wordRejected);
+  socket.on('game-in-progress', gameInProgress);
 
   $('#join').submit(function(event) {
     event.preventDefault();
@@ -17,10 +20,7 @@ function connect()
     socket.emit('join', $('#input-name').val());
   });
 
-  $('#button-watch').click(function() {
-    $('#login').hide();
-    $('#fade').fadeOut(1000);
-  });
+  $('#button-watch').click(gameInProgress);
 
   $('#ready').submit(function(event) {
     event.preventDefault();
@@ -46,15 +46,26 @@ function setState(state) {
   }
 }
 
+function gameInProgress() {
+  activePlayer = false;
+  $('#login').hide();
+  $('#waiting').hide();
+  $('#watching-alert').slideDown(1000);
+  $('#fade').fadeOut(1000);
+}
+
 function joined() {
+  activePlayer = true;
   $('#login').hide();
   $('#waiting').show();
 }
 
 function startGame() {
-  $('#waiting').hide();
-  $('#fade').fadeOut(1000);
-  $('#input-word').slideDown(1000).focus();
+  if (activePlayer) {
+    $('#waiting').hide();
+    $('#fade').fadeOut(1000);
+    $('#input-word').slideDown(1000).focus();
+  }
 }
 
 function playerJoined(name) {

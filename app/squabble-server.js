@@ -24,11 +24,20 @@ exports.connect = function(socket) {
 
   socket.emit('set-state', gameState);
 
-  socket.on('join', function(name) { join(socket, name); });
+  if (isRunning) {
+    socket.emit('game-in-progress');
+  } else {
+    socket.on('join', function(name) { join(socket, name); });
+  }
 };
 
 function join(socket, name)
 {
+  if (isRunning) {
+    socket.emit('game-in-progress');
+    return;
+  }
+
   socket.emit('joined');
 
   var playerIndex = gameState.players.push({ name: name }) - 1;
@@ -44,6 +53,11 @@ function join(socket, name)
 }
 
 function ready(socket, playerIndex) {
+  if (isRunning) {
+    socket.emit('game-in-progress');
+    return;
+  }
+
   gameState.players[playerIndex].started = true;
   if (_.all(gameState.players, function(x) { return x.started; })) {
     start();
